@@ -1,0 +1,28 @@
+CREATE TABLE `players` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(32) NOT NULL,
+  `first_seen` DATETIME NOT NULL,
+  `xp` INT(11) NOT NULL,
+  `coin` INT(11) NOT NULL,
+  `inv` VARCHAR(100) NOT NULL,
+  `clan` VARCHAR(100) NOT NULL,
+  `lvl` INT(11) NOT NULL,
+  `creature` VARCHAR(32) NOT NULL,
+  `occupation` varchar(32) not null,
+  `pets` varchar(32) not null,
+  `isdonator` varchar(32) not null,
+  `quest` varchar(32) not null,
+  PRIMARY KEY (`id`)
+) AUTO_INCREMENT = 1;
+
+
+CREATE TABLE `pets` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ownerid` varchar(32) null,
+  `name` VARCHAR(32) NULL,
+  `xp` INT(11) NULL,
+  `lvl` INT(11) NULL,
+  `species` varchar(32) null,
+  PRIMARY KEY (`id`)
+) AUTO_INCREMENT = 1;
+
