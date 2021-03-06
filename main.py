@@ -1,4 +1,3 @@
-
 import discord
 import pymysql.cursors
 from msqlsettings import *
@@ -12,7 +11,6 @@ from discord.ext import tasks
 from discord.ext import commands
 
 from settings import BOT_TOKEN
-
 
 BOT_PREFIX = ("?", "!")
 itemdict = {":socks: sock": 1,
@@ -109,7 +107,6 @@ class RPGLion:
         exp = 0
         coin = 100
         inv = "treasurebox 1"
-        clan = "none"
         lvl = 0
         creature = "human"
         occupation = "unemployed"
@@ -121,10 +118,10 @@ class RPGLion:
 
         try:
             with self.db.cursor() as cursor:
-                sql = "INSERT INTO `players` (`user_id`, `first_seen`, `xp`, `coin`, `inv`, `clan`, `lvl`, `creature`,\
-                 `occupation`, `pets`, `isdonator`, `quest`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
-                cursor.execute(sql, (member.id, member.joined_at, exp, coin, inv,
-                                     clan, lvl, creature, occupation, pets, isdonator, quest))
+                sql = "INSERT INTO `players` (`user_id`, `first_seen`, `xp`, `coin`, `inv`, `lvl`, `creature`,\
+                 `occupation`, `pets`, `isdonator`, `quest`) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
+                cursor.execute(sql, (member.id, member.joined_at, exp, coin, inv, lvl, creature, occupation, pets,
+                                     isdonator, quest))
             self.db.commit()
             print("{✧} added " + str(member.id) + " to the database")
             # with connection.cursor() as cursor:
@@ -363,7 +360,8 @@ class RPGLion:
 
             return await ctx.send(randevent)
 
-        @self.bot.command(name="showquest", description="shows the quest you are on", brief="!showquest", aliases=["questlist"],
+        @self.bot.command(name="showquest", description="shows the quest you are on", brief="!showquest",
+                          aliases=["questlist"],
                           pass_context=True)
         @commands.cooldown(1, 3, commands.BucketType.user)
         async def showquest(ctx):
@@ -816,7 +814,6 @@ class RPGLion:
                 self.update_xp(ctx.author, -(int(self.get_xp(ctx.author)['xp'])))
                 self.update_occ(ctx.author, "unemployed")
                 self.update_char(ctx.author, "human")
-                self.update_clan(ctx.author, "none")
                 self.update_inv(ctx.author, "clear", 1)
                 self.clear_lvl(ctx.author)
                 self.clear_pets(ctx.author)
@@ -1392,11 +1389,6 @@ class RPGLion:
                 inline=True
             )
             embed.add_field(
-                name="Clan",
-                value=self.get_clan(member)['clan'],
-                inline=True
-            )
-            embed.add_field(
                 name="Pets",
                 value=self.disp_pets(member),
                 inline=True
@@ -1436,7 +1428,7 @@ class RPGLion:
                           aliases=["Rob"],
                           pass_context=True)
         @commands.cooldown(1, 15, commands.BucketType.user)
-        async def rob(ctx, member: discord.Member=None, coins: int=None):
+        async def rob(ctx, member: discord.Member = None, coins: int = None):
 
             if member == ctx.author:
                 return await ctx.send("You can't rob yourself lol.")
@@ -1568,41 +1560,6 @@ class RPGLion:
         async def on_command_error(ctx, error):
             if isinstance(error, commands.errors.CommandOnCooldown):
                 return await ctx.send("This command is on a %.2fs cooldown" % error.retry_after)
-
-        # log into database on join
-        # get xp on message, level up and get coin
-
-        # choose character
-        # shop with coins
-        # armor
-        # Stuff to do:
-        # attack ppl
-        # rob
-        # fight evil
-        # get married
-        # fishing
-        # get job
-        # go hunt
-        # backpack
-        # lootboxes
-        # wallet
-        # bank
-        # stuff
-        # pets
-        # mini games to get more xp and coin
-        # sell stuff
-        # gift ppl
-        # chances
-        # drop items
-        # cute pets
-        # use
-        # leaderboard
-        # voting
-        # donate real moneys
-        # go on quest
-        # casino
-        # clans
-        # profile/stats/rank
 
     def is_donator(self, member):
         try:
@@ -2022,31 +1979,6 @@ class RPGLion:
                     print("{✧} error updating lvl for %s: %s" % (member.id, e))
         else:
             return
-
-    def get_clan(self, member):
-        try:
-            with self.db.cursor() as cursor:
-                sql = "SELECT `clan` FROM `players` WHERE `user_id`=%s"
-                cursor.execute(sql, member.id)
-                result = cursor.fetchone()
-                if not result:
-                    print("{✧} User does not exist: %s" % member.id)
-                else:
-                    return result
-        except Exception as e:
-            print("{✧} Error with id %s.\n%s " % (member.id, e))
-
-    def update_clan(self, member, clann):
-        player = self.get_clan(member)
-        with self.db.cursor() as cursor:
-            try:
-                sql = "UPDATE players SET clan = %s WHERE user_id = %s"
-                new_clan = clann
-                cursor.execute(sql, (clann, member.id))
-                self.db.commit()
-                print("{✧} Updated user %s 's clan from %s to %s" % (member.id, player['clan'], new_clan))
-            except Exception as e:
-                print("{✧} error updating clan for %s: %s" % (member.id, e))
 
     def get_inv(self, member):
         try:
