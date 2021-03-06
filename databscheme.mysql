@@ -5,7 +5,6 @@ CREATE TABLE `players` (
   `xp` INT(11) NOT NULL,
   `coin` INT(11) NOT NULL,
   `inv` VARCHAR(100) NOT NULL,
-  `clan` VARCHAR(100) NOT NULL,
   `lvl` INT(11) NOT NULL,
   `creature` VARCHAR(32) NOT NULL,
   `occupation` varchar(32) not null,
